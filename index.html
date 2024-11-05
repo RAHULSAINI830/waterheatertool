@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Heater Instant Quote Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+            color: #333;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .quote-tool {
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            padding: 20px;
+            padding-top: 40px;
+            background: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .question, .result {
+            display: none;
+        }
+
+        .question.active, .result.active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #ee5566;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #333;
+            width: 45%;
+            min-width: 100px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card:hover {
+            background-color: #ee5566;
+            color: #fff;
+        }
+
+        .start-over {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #ee5566;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="quote-tool">
+        <button class="back-button" id="backButton" onclick="goBack()" style="display: none;">Back</button>
+        <h1>Water Heater Instant Quote Tool</h1>
+
+        <!-- Start Screen - Service Type -->
+        <div class="question active" id="question1">
+            <h2>What Service Do You Need?</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(1, 'Maintenance')">
+                    <i class="fas fa-tools"></i> Maintenance
+                </div>
+                <div class="card" onclick="selectOption(1, 'Install')">
+                    <i class="fas fa-hammer"></i> Install
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Options -->
+        <div class="question" id="maintenanceOptions">
+            <h2>Maintenance Type</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(99, 99)">Tank </div>
+                <div class="card" onclick="calculateFinalCost(232, 232)">Heat Pump </div>
+                <div class="card" onclick="calculateFinalCost(232, 232)">Tankless </div>
+            </div>
+        </div>
+
+        <!-- Installation Type -->
+        <div class="question" id="installType">
+            <h2>Type of Installation</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(2, 'Tank')">Tank</div>
+                <div class="card" onclick="selectOption(2, 'Tankless')">Tankless</div>
+            </div>
+        </div>
+
+        <!-- Tank Installation Flow -->
+        <div class="question" id="tankInstallType">
+            <h2>Is This a Replacement or New Install?</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(3, 'Replacement')">Replacement</div>
+                <div class="card" onclick="selectOption(3, 'NewInstall')">New Install</div>
+            </div>
+        </div>
+
+        <div class="question" id="tankLocation">
+            <h2>Where Will the Tank Be Installed?</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(4, 'LocationSelected')">Attic</div>
+                <div class="card" onclick="selectOption(4, 'LocationSelected')">Garage</div>
+                <div class="card" onclick="selectOption(4, 'LocationSelected')">Closet</div>
+                <div class="card" onclick="selectOption(4, 'LocationSelected')">Crawl Space</div>
+                <div class="card" onclick="selectOption(4, 'LocationSelected')">Other</div>
+            </div>
+        </div>
+
+        <div class="question" id="tankSize">
+            <h2>Choose Tank Size</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(5, '30-39')">30-39 Gallons</div>
+                <div class="card" onclick="selectOption(5, '40-49')">40-49 Gallons</div>
+                <div class="card" onclick="selectOption(5, '50-59')">50-59 Gallons</div>
+                <div class="card" onclick="selectOption(5, '60+')">60+ Gallons</div>
+            </div>
+        </div>
+
+        <!-- Fuel Type for Tank -->
+        <div class="question" id="fuelType30-39">
+            <h2>Select Fuel Type (30-39 Gallons)</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(4000, 5000)">Propane </div>
+                <div class="card" onclick="calculateFinalCost(3800, 5000)">Natural Gas </div>
+            </div>
+        </div>
+
+        <div class="question" id="fuelType40-49">
+            <h2>Select Fuel Type (40-49 Gallons)</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(3800, 5200)">Propane </div>
+                <div class="card" onclick="calculateFinalCost(3650, 5005)">Natural Gas </div>
+                <div class="card" onclick="calculateFinalCost(8000, 10000)">Electric/Heat Pump </div>
+            </div>
+        </div>
+
+        <div class="question" id="fuelType50-59">
+            <h2>Select Fuel Type (50-59 Gallons)</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(3900, 5300)">Propane </div>
+                <div class="card" onclick="calculateFinalCost(3650, 5100)">Natural Gas </div>
+                <div class="card" onclick="calculateFinalCost(8900, 10000)">Electric/Heat Pump </div>
+            </div>
+        </div>
+
+        <div class="question" id="fuelType60+">
+            <h2>Select Fuel Type (60+ Gallons)</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(6400, 8200)">Propane ($6,400 - $8,200)</div>
+                <div class="card" onclick="calculateFinalCost(6000, 7700)">Natural Gas ($6,000 - $7,700)</div>
+                <div class="card" onclick="calculateFinalCost(9000, 14000)">Electric/Solar ($9,000 - $14,000)</div>
+            </div>
+        </div>
+
+        <!-- Tankless Installation Flow -->
+        <div class="question" id="tanklessInstallType">
+            <h2>Is This a Replacement or New Install?</h2>
+            <div class="options">
+                <div class="card" onclick="selectOption(6, 'Replacement')">Replacement</div>
+                <div class="card" onclick="selectOption(6, 'NewInstall')">New Install</div>
+            </div>
+        </div>
+
+        <div class="question" id="tanklessSizeReplacement">
+            <h2>Tankless Size for Replacement</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(3500, 4900)">Low Gallons (Propane/Natural Gas)</div>
+                <div class="card" onclick="calculateFinalCost(4300, 5900)">High Gallons (Propane/Natural Gas)</div>
+            </div>
+        </div>
+
+        <div class="question" id="tanklessSizeNewInstall">
+            <h2>Tankless Size for New Install</h2>
+            <div class="options">
+                <div class="card" onclick="calculateFinalCost(5300, 6200)">Low Gallons (Propane/Natural Gas) </div>
+                <div class="card" onclick="calculateFinalCost(6200, 7200)">High Gallons (Propane/Natural Gas) </div>
+            </div>
+        </div>
+
+        <!-- Final Result Screen -->
+        <div class="result" id="result">
+            <h2>Estimated Cost:</h2>
+            <p><strong><span id="estimated-cost">$0</span></strong></p>
+            <button class="start-over" onclick="startOver()">Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        const backButton = document.getElementById('backButton');
+        let currentStep = 1;
+        let stepHistory = [];
+
+        function selectOption(step, option) {
+            stepHistory.push(step);
+            const currentQuestion = document.querySelector('.question.active');
+            if (currentQuestion) currentQuestion.classList.remove('active');
+
+            backButton.style.display = step > 1 ? 'inline-block' : 'none';
+            currentStep++;
+
+            if (step === 1) {
+                document.getElementById(option === 'Maintenance' ? 'maintenanceOptions' : 'installType').classList.add('active');
+            } else if (step === 2) {
+                document.getElementById(option === 'Tank' ? 'tankInstallType' : 'tanklessInstallType').classList.add('active');
+            } else if (step === 3) {
+                document.getElementById('tankLocation').classList.add('active');
+            } else if (step === 4) {
+                document.getElementById('tankSize').classList.add('active');
+            } else if (step === 5) {
+                document.getElementById(`fuelType${option}`).classList.add('active');
+            } else if (step === 6) {
+                document.getElementById(option === 'Replacement' ? 'tanklessSizeReplacement' : 'tanklessSizeNewInstall').classList.add('active');
+            }
+        }
+
+        function goBack() {
+            currentStep--;
+            const currentQuestion = document.querySelector('.question.active');
+            if (currentQuestion) currentQuestion.classList.remove('active');
+
+            const previousStep = stepHistory.pop();
+            document.getElementById(`question${previousStep}`).classList.add('active');
+            backButton.style.display = stepHistory.length > 0 ? 'inline-block' : 'none';
+        }
+
+        function calculateFinalCost(min, max) {
+            const activeQuestion = document.querySelector('.question.active');
+            if (activeQuestion) activeQuestion.classList.remove('active');
+
+            document.getElementById('result').classList.add('active');
+            document.getElementById('estimated-cost').textContent = `$${min} - $${max}`;
+            backButton.style.display = 'none';
+        }
+
+        function startOver() {
+            currentStep = 1;
+            stepHistory = [];
+            document.querySelectorAll('.question, .result').forEach(div => div.classList.remove('active'));
+            document.getElementById('question1').classList.add('active');
+            backButton.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
